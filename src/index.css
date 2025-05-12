@@ -1,0 +1,293 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme=dark] &));
+
+:root {
+  color-scheme: light dark;
+  --primary-light: #ba7c3c;
+  --primary-dark: #375176;
+  --nav-bg-light: #805e5433;
+  --nav-bg-dark: #37517682;
+}
+
+/* Light theme (default) */
+:root,
+[data-theme="light"] {
+  --primary: var(--primary-light);
+  --nav-bg: var(--nav-bg-light);
+
+  /* Light mode colors */
+  --select-bg: white;
+  --select-border: #ba7c3c;
+  --select-focus: #ba7c3c;
+  --select-border-hover: #ba7c3c;
+  --select-text: black;
+
+  --option-bg: white;
+  --option-text: black;
+  --option-selected-bg: #ba7c3c;
+  --option-selected-text: white;
+  --option-hover-bg: #e8c8a8;
+  --option-hover-text: black;
+
+  --menu-bg: white;
+  --placeholder-text: #999;
+  --indicator-color: #ba7c3c;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --primary: var(--primary-dark);
+  --nav-bg: var(--nav-bg-dark);
+
+  /* Dark mode colors */
+  --select-bg: #375176;
+  --select-border: white;
+  --select-focus: #67c4ed;
+  --select-border-hover: white;
+  --select-text: white;
+
+  --option-bg: #375176;
+  --option-text: white;
+  --option-selected-bg: #67c4ed;
+  --option-selected-text: #375176;
+  --option-hover-bg: #56b4dc;
+  --option-hover-text: white;
+
+  --menu-bg: #375176;
+  --placeholder-text: #aaa;
+  --indicator-color: #67c4ed;
+}
+/* Toggle */
+
+.switch {
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  width: 64px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #929292;
+  transition: 0.4s;
+  border-radius: 30px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 30px;
+  width: 30px;
+  border-radius: 20px;
+  left: 2px;
+  bottom: 2px;
+  z-index: 2;
+  background-color: #e8e8e8;
+  transition: 0.4s;
+}
+
+.sun svg {
+  position: absolute;
+  top: 6px;
+  left: 36px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+}
+
+.moon svg {
+  fill: #0091ff;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+}
+
+/* .switch:hover */
+.sun svg {
+  animation: rotate 15s linear infinite;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* .switch:hover */
+.moon svg {
+  animation: tilt 5s linear infinite;
+}
+
+@keyframes tilt {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-10deg);
+  }
+
+  75% {
+    transform: rotate(10deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.toggle-theme:checked + .slider {
+  background-color: #183153;
+}
+
+.toggle-theme:focus + .slider {
+  box-shadow: 0 0 1px #183153;
+}
+
+.toggle-theme:checked + .slider:before {
+  transform: translateX(30px);
+}
+
+.nav-btnColor {
+  background-color: var(--nav-bg) !important;
+  backdrop-filter: blur(15px);
+  opacity: 1;
+}
+
+/* For the active tab background */
+.nav-button-container {
+  position: relative;
+}
+
+/* Ensure the button content stays above the background */
+.nav-button-content {
+  position: relative;
+  z-index: 10;
+}
+
+.iso_active-btn {
+  @apply dark:hover:bg-[#546d8f] hover:bg-[#ba7b3c90] text-[#fff] dark:text-[#fff] hover:scale-110 transition-colors cursor-pointer p-2 px-6 rounded-lg border-6 -mb-1 bg-[#BA7C3C] dark:bg-[#375176] border-[#e8e8e8] dark:border-[#101635];
+}
+
+.iso_btn {
+  @apply dark:hover:bg-[#546d8f] text-[#ba7b3c] dark:text-white hover:bg-[#ba7b3c90] hover:text-white hover:scale-110 transition-colors cursor-pointer p-2 px-6 rounded-lg;
+}
+
+.pdf-viewer {
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.react-pdf__Page {
+  margin: 10px 0;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.page-controls {
+  margin-top: 10px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+/* input text */
+.dialog-content input[type="text"],
+.dialog-content .text-sp,
+.dialog-content .text-lb {
+  font-family: "Ubuntu", sans-serif;
+  display: block;
+  margin: 20px;
+  padding: 5px;
+  border: none;
+  font-size: 12px;
+}
+
+.dialog-content input[type="text"]:focus {
+  outline: 0;
+}
+/* Question */
+
+.dialog-content input[type="text"].question {
+  font-size: 24px;
+  font-weight: 300;
+  border-radius: 2px;
+  margin: 0;
+  border: none;
+  width: 100%;
+  background: rgba(0, 0, 0, 0);
+  transition: padding-top 0.2s ease, margin-top 0.2s ease;
+  overflow-x: hidden; /* Hack to make "rows" attribute apply in Firefox. */
+}
+/* Underline and Placeholder */
+
+.dialog-content input[type="text"].question + .text-lb {
+  display: block;
+  position: relative;
+  white-space: nowrap;
+  padding: 0;
+  margin: 0;
+  width: 20%;
+  border-top: 1px solid #a4a4a4;
+  -webkit-transition: width 0.4s ease;
+  transition: width 0.4s ease;
+  height: 0px;
+}
+
+.dialog-content input[type="text"].question:focus + .text-lb {
+  width: 100%;
+}
+
+.dialog-content input[type="text"].question:focus,
+.dialog-content input[type="text"].question:valid {
+  padding-top: 35px;
+}
+
+.dialog-content input[type="text"].question:focus + .text-lb > .text-sp,
+.dialog-content input[type="text"].question:valid + .text-lb > .text-sp {
+  top: -80px;
+  font-size: 18px;
+  /* color: #ba7c3c; */
+}
+
+.dialog-content input[type="text"].question:valid + .text-lb {
+  border-color: #a4a4a4;
+}
+
+.dialog-content input[type="text"].question:invalid {
+  box-shadow: none;
+}
+
+.dialog-content input[type="text"].question + .text-lb > .text-sp {
+  font-weight: 300;
+  margin: 0;
+  position: absolute;
+  /* color: #555; */
+  font-size: 24px;
+  top: -45px;
+  left: 0px;
+  z-index: 0;
+  -webkit-transition: top 0.2s ease, font-size 0.2s ease, color 0.2s ease;
+  transition: top 0.2s ease, font-size 0.2s ease, color 0.2s ease;
+}
