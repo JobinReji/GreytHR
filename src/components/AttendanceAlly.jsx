@@ -12,7 +12,7 @@ export default function AttendanceAlly() {
   const AttendanceAllyBtns = () => {
     const btns = ["Summary View", "Deep-dive View"];
     return (
-      <div className="w-[50%] flex justify-between mx-10">
+      <div className="w-[50%] flex justify-start gap-4 mx-10">
         {btns.map((btn) => (
           <motion.button
             key={btn}
@@ -43,7 +43,7 @@ export default function AttendanceAlly() {
           </motion.div>
         </AnimatePresence>
       </div>
-      <div className="h-[10%] w-[60%] flex justify-between items-end">
+      <div className="h-[10%] w-full flex items-end">
         {AttendanceAllyBtns()}
       </div>
     </div>
