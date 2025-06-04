@@ -10,6 +10,7 @@ import Tab2Content from "./components/Tab2Content.jsx";
 import IsoPolicy from "./components/IsoPolicy.jsx";
 import OrgChart from "./components/OrgChart.jsx";
 import Expense from "./components/Expense.jsx";
+import AttendanceAlly from "./components/AttendanceAlly.jsx";
 
 function App() {
   const { theme } = useTheme();
@@ -44,7 +45,7 @@ function App() {
     // tab_5: <div>Content for Tab 5</div>,
     tab_6: <IsoPolicy />,
     tab_7: <OrgChart />,
-    // tab_8: <div>Content for Tab 8</div>,
+    tab_8: <AttendanceAlly />,
     // tab_9: <div>Content for Tab 9</div>,
     tab_10: <Expense />,
     // tab_11: <div>Content for Tab 11</div>,
