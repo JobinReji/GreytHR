@@ -29,17 +29,18 @@ const WeekPicker = ({ selectedWeek, onWeekChange }) => {
     const date = e.target.value;
     if (!date) return;
 
-    const startDate = new Date(date);
-    if (isNaN(startDate.getTime())) return;
+    const startDateObj = new Date(date);
+    if (isNaN(startDateObj.getTime())) return;
 
-    const endDate = new Date(date);
-    endDate.setDate(startDate.getDate() + 5);
+    // Calculate end date (Monday to Saturday = 5 days)
+    const endDateObj = new Date(startDateObj);
+    endDateObj.setDate(startDateObj.getDate() + 5);
 
-    const formattedStart = formatDate(startDate);
-    const formattedEnd = formatDate(endDate);
+    const formattedStart = formatDate(startDateObj);
+    const formattedEnd = formatDate(endDateObj);
 
     setStartDate(date);
-    setEndDate(endDate.toISOString().split("T")[0]);
+    setEndDate(formattedEnd);
     onWeekChange(`${formattedStart} to ${formattedEnd}`);
   };
 
@@ -47,23 +48,75 @@ const WeekPicker = ({ selectedWeek, onWeekChange }) => {
     return date.toISOString().split("T")[0];
   };
 
+  const handlePickerClick = () => {
+    const input = document.getElementById("weekStart");
+    if (input) {
+      input.showPicker();
+    }
+  };
+
   return (
-    <div className="flex items-center gap-2">
-      <input
-        type="date"
-        value={startDate}
-        onChange={handleStartDateChange}
-        className="bg-white dark:bg-[#375176] rounded-md p-2 text-gray-900 dark:text-white"
-      />
+    <div className="flex items-center gap-4">
+      <div className="relative bg-white dark:bg-[#375176] rounded-md">
+        <input
+          type="date"
+          id="weekStart"
+          required
+          value={startDate}
+          onChange={handleStartDateChange}
+          className="peer w-[80%] text-[24px] invisible [&::-webkit-calendar-picker-indicator]:opacity-0"
+        />
+        <label
+          htmlFor="weekStart"
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-900 dark:text-white pointer-events-none transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-[24px] peer-placeholder-shown:text-gray-400"
+        >
+          {startDate ? formatDisplayDate(startDate) : "Select week start"}
+        </label>
+        <button
+          type="button"
+          onClick={handlePickerClick}
+          className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-auto"
+          aria-label="Open date picker"
+        >
+          <svg
+            className="w-5 h-5 text-[#ba7c3c] dark:text-[#67c4ed]"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            ></path>
+          </svg>
+        </button>
+      </div>
+
       <span className="text-gray-900 dark:text-white">to</span>
-      <input
-        type="date"
-        value={endDate}
-        readOnly
-        className="bg-white dark:bg-[#375176] rounded-md p-2 text-gray-900 dark:text-white opacity-70"
-      />
+
+      <div className="relative bg-white dark:bg-[#375176] rounded-md opacity-70">
+        <input
+          type="date"
+          value={endDate}
+          readOnly
+          className="w-[80%] text-[24px] invisible"
+        />
+        <label className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-900 dark:text-white pointer-events-none">
+          {endDate ? formatDisplayDate(endDate) : "Week end"}
+        </label>
+      </div>
     </div>
   );
+};
+
+// Helper function to format date for display (e.g., "Mon, Jan 1")
+const formatDisplayDate = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  const options = { weekday: "short", month: "short", day: "numeric" };
+  return date.toLocaleDateString("en-US", options);
 };
 
 export default function DeepDive() {
