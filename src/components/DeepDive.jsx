@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Select from "react-select";
 import {
   WorkingHoursChart,
@@ -13,10 +13,66 @@ const options = [
   { value: "Soamilal_K", label: "Soamilal K" },
 ];
 
+const WeekPicker = ({ selectedWeek, onWeekChange }) => {
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  useEffect(() => {
+    if (selectedWeek) {
+      const [start, end] = selectedWeek.split(" to ");
+      setStartDate(start);
+      setEndDate(end);
+    }
+  }, [selectedWeek]);
+
+  const handleStartDateChange = (e) => {
+    const date = e.target.value;
+    if (!date) return;
+
+    const startDate = new Date(date);
+    if (isNaN(startDate.getTime())) return;
+
+    const endDate = new Date(date);
+    endDate.setDate(startDate.getDate() + 5);
+
+    const formattedStart = formatDate(startDate);
+    const formattedEnd = formatDate(endDate);
+
+    setStartDate(date);
+    setEndDate(endDate.toISOString().split("T")[0]);
+    onWeekChange(`${formattedStart} to ${formattedEnd}`);
+  };
+
+  const formatDate = (date) => {
+    return date.toISOString().split("T")[0];
+  };
+
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        type="date"
+        value={startDate}
+        onChange={handleStartDateChange}
+        className="bg-white dark:bg-[#375176] rounded-md p-2 text-gray-900 dark:text-white"
+      />
+      <span className="text-gray-900 dark:text-white">to</span>
+      <input
+        type="date"
+        value={endDate}
+        readOnly
+        className="bg-white dark:bg-[#375176] rounded-md p-2 text-gray-900 dark:text-white opacity-70"
+      />
+    </div>
+  );
+};
+
 export default function DeepDive() {
   const [activeButton, setActiveButton] = useState("workingHours");
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedMonthYear, setSelectedMonthYear] = useState("");
+  const [selectedWeek, setSelectedWeek] = useState("");
+
+  const isDeepDive = activeButton === "deepDive";
 
   const renderChart = () => {
     switch (activeButton) {
@@ -67,6 +123,7 @@ export default function DeepDive() {
       padding: "2px",
       borderRadius: "6px",
       minHeight: "40px",
+      minWidth: "160px",
       boxShadow: state.isFocused ? "0 0 0 1px var(--select-focus)" : null,
       "&:hover": {
         borderColor: "var(--select-border-hover)",
@@ -111,8 +168,14 @@ export default function DeepDive() {
     setSelectedMonthYear(e.target.value);
   };
 
+  const handleWeekChange = (week) => {
+    setSelectedWeek(week);
+  };
+
   const handlePickerClick = () => {
-    const input = document.getElementById("monthYear");
+    const input = document.getElementById(
+      isDeepDive ? "weekStart" : "monthYear"
+    );
     if (input) {
       input.showPicker();
     }
@@ -137,43 +200,51 @@ export default function DeepDive() {
             placeholder="Select an option"
           />
         </div>
-        <div className="relative bg-white dark:bg-[#375176] rounded-md">
-          <input
-            type="month"
-            name="monthYear"
-            id="monthYear"
-            required
-            value={selectedMonthYear}
-            onChange={handleMonthYearChange}
-            className="peer w-[80%] text-[24px] invisible [&::-webkit-calendar-picker-indicator]:opacity-0"
+
+        {isDeepDive ? (
+          <WeekPicker
+            selectedWeek={selectedWeek}
+            onWeekChange={handleWeekChange}
           />
-          <label
-            htmlFor="monthYear"
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-900 dark:text-white pointer-events-none transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-[24px] peer-placeholder-shown:text-gray-400"
-          >
-            Select Month
-          </label>
-          <button
-            type="button"
-            onClick={handlePickerClick}
-            className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-auto"
-            aria-label="Open date picker"
-          >
-            <svg
-              className="w-5 h-5 text-[#ba7c3c] dark:text-[#67c4ed]"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+        ) : (
+          <div className="relative bg-white dark:bg-[#375176] rounded-md">
+            <input
+              type="month"
+              name="monthYear"
+              id="monthYear"
+              required
+              value={selectedMonthYear}
+              onChange={handleMonthYearChange}
+              className="peer w-[80%] text-[24px] invisible [&::-webkit-calendar-picker-indicator]:opacity-0"
+            />
+            <label
+              htmlFor="monthYear"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-900 dark:text-white pointer-events-none transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-[24px] peer-placeholder-shown:text-gray-400"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              ></path>
-            </svg>
-          </button>
-        </div>
+              Select Month
+            </label>
+            <button
+              type="button"
+              onClick={handlePickerClick}
+              className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-auto"
+              aria-label="Open date picker"
+            >
+              <svg
+                className="w-5 h-5 text-[#ba7c3c] dark:text-[#67c4ed]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
       <div className="w-full h-[90%]">
         <div className="flex justify-around items-center h-[10%]">
@@ -224,22 +295,22 @@ export default function DeepDive() {
   );
 }
 
-const formatMonthYear = (monthYearString) => {
-  if (!monthYearString) return "";
-  const [year, month] = monthYearString.split("-");
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  return `${monthNames[parseInt(month) - 1]} ${year}`;
-};
+// const formatMonthYear = (monthYearString) => {
+//   if (!monthYearString) return "";
+//   const [year, month] = monthYearString.split("-");
+//   const monthNames = [
+//     "January",
+//     "February",
+//     "March",
+//     "April",
+//     "May",
+//     "June",
+//     "July",
+//     "August",
+//     "September",
+//     "October",
+//     "November",
+//     "December",
+//   ];
+//   return `${monthNames[parseInt(month) - 1]} ${year}`;
+// };
