@@ -233,6 +233,7 @@ export default function OrgChart() {
       padding: "2px",
       borderRadius: "6px",
       minHeight: "40px",
+      minWidth: "160px",
       boxShadow: state.isFocused ? "0 0 0 1px var(--select-focus)" : null,
       "&:hover": {
         borderColor: "var(--select-border-hover)",
