@@ -327,13 +327,15 @@ export default function OrgChart() {
                   key={index}
                   className="border-b border-b-[#BA7C3C] dark:border-b-white hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
-                  {columns.map((column) => (
+                  {columns.map((column, colIndex) => (
                     <td
                       key={`${expense.id}-${column.name}`}
                       style={{
                         minWidth: column.minWidth,
                       }}
-                      className="py-3 px-4 text-left border-r border-dashed border-gray-200 dark:border-gray-600"
+                      className={`py-3 px-4 text-left border-dashed border-gray-200 dark:border-gray-600 ${
+                        colIndex === columns.length - 1 ? "" : "border-r"
+                      }`}
                     >
                       {getEmployeeValue(expense, column.name)}
                     </td>
