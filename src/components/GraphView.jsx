@@ -1,6 +1,10 @@
 import { useState } from "react";
 import Select from "react-select";
-import { ExpenseBarChart } from "./AllCharts";
+import {
+  TodayWorkingStatusChart,
+  WeekSummaryChart,
+  MonthSummaryChart,
+} from "./AllCharts";
 
 const options = [
   { value: "Venkatsubramanian_R", label: "Venkatsubramanian R" },
@@ -79,6 +83,17 @@ export default function GraphView() {
           classNamePrefix="select"
           placeholder="Select an option"
         />
+      </div>
+      <div className="w-full h-[80%] flex justify-between">
+        <div className="w-[20%] h-full">
+          <TodayWorkingStatusChart />
+        </div>
+        <div className="w-[39%] h-full">
+          <WeekSummaryChart />
+        </div>
+        <div className="w-[39%] h-full">
+          <MonthSummaryChart />
+        </div>
       </div>
     </div>
   );

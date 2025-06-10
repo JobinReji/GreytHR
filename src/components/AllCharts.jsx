@@ -762,9 +762,7 @@ const DeepDiveChart = () => {
         name: "Working Time",
         value: [index, startTimeMs, endTimeMs, duration],
         itemStyle: {
-          normal: {
-            color: workingColor,
-          },
+          color: workingColor,
         },
       });
     });
@@ -799,7 +797,9 @@ const DeepDiveChart = () => {
         type: "rect",
         transition: ["shape"],
         shape: rectShape,
-        style: api.style(),
+        style: {
+          fill: workingColor,
+        },
       }
     );
   }
@@ -931,6 +931,350 @@ const DeepDiveChart = () => {
   );
 };
 
+const TodayWorkingStatusChart = () => {
+  const { theme } = useTheme();
+
+  const textColor = theme === "dark" ? "#ffffff" : "#000000";
+  const workingColor = "#6F9262"; // A shade of green
+  const leaveColor = "#8C5E5D"; // A shade of brown/red
+  const wfhColor = "#D78737"; // A shade of orange
+
+  const option = {
+    backgroundColor: "transparent", // Set background to transparent
+    tooltip: {
+      trigger: "item",
+      formatter: "{b}: {c}", // Shows name and value on hover
+    },
+    legend: {
+      // Position the legend at the bottom center
+      bottom: "0%",
+      left: "center",
+      textStyle: {
+        color: textColor, // Dynamic text color
+      },
+      // Align legend items horizontally
+      orient: "horizontal",
+      data: ["Working", "Leave", "WFH"], // Explicitly define legend items
+    },
+    series: [
+      {
+        name: "Today's Working Status",
+        type: "pie",
+        radius: ["60%", "90%"], // Inner and outer radius for the donut chart
+        avoidLabelOverlap: false,
+        label: {
+          show: true, // Show labels
+          position: "inside", // Position labels inside the segments
+          formatter: "{c}", // Display the value inside the segments
+          color: theme === "dark" ? "#000000" : "#ffffff", // Label text color, contrasting with segment color
+          fontSize: 12,
+          fontWeight: "bold",
+        },
+        emphasis: {
+          // Style when hovered over
+          label: {
+            show: true,
+            fontSize: 15,
+            fontWeight: "bold",
+          },
+        },
+        labelLine: {
+          show: false, // Hide label connecting lines
+        },
+        data: [
+          { value: 35, name: "Working", itemStyle: { color: workingColor } }, // Main green segment
+          { value: 3, name: "Leave", itemStyle: { color: leaveColor } }, // Brown segment
+          { value: 2, name: "WFH", itemStyle: { color: wfhColor } }, // Orange segment
+        ],
+      },
+    ],
+    title: {
+      text: "Today's Working Status",
+      left: "center",
+      top: "5%",
+      textStyle: {
+        color: textColor, // Dynamic title color
+      },
+    },
+  };
+
+  return (
+    <ReactECharts option={option} style={{ height: "100%", width: "100%" }} />
+  );
+};
+
+const WeekSummaryChart = () => {
+  const { theme } = useTheme();
+
+  const textColor = theme === "dark" ? "#ffffff" : "#000000";
+  const axisLineColor = theme === "dark" ? "#ffffff" : "#000000";
+  const gridBorderColor =
+    theme === "dark" ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.1)";
+
+  // Define colors based on the image and theme
+  const workingColor = "#6F9262"; // A shade of green
+  const leaveColor = "#8C5E5D"; // A shade of brown/red
+  const wfhColor = "#D78737"; // A shade of orange
+
+  const option = {
+    backgroundColor: "transparent", // Set background to transparent
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        // Use axis to trigger tooltip
+        type: "shadow", // 'shadow' as default; can also be 'line' or 'none'
+      },
+      formatter: function (params) {
+        let tooltipContent = params[0].name + "<br/>";
+        params.forEach((item) => {
+          tooltipContent += `${item.marker} ${item.seriesName}: ${item.value}<br/>`;
+        });
+        return tooltipContent;
+      },
+    },
+    legend: {
+      data: ["WFH", "Leave", "Working"], // Legend items based on your data
+      bottom: "0%", // Position at the bottom
+      left: "center", // Center horizontally
+      textStyle: {
+        color: textColor, // Dynamic text color
+      },
+    },
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "10%", // Adjust bottom to make space for the legend
+      top: "15%", // Adjust top for title
+      containLabel: true,
+    },
+    xAxis: {
+      type: "value",
+      axisLabel: {
+        show: true,
+        formatter: "{value}", // Show raw numbers as labels
+        color: textColor, // Dynamic text color
+      },
+      axisLine: {
+        lineStyle: {
+          color: axisLineColor, // Dynamic axis line color
+        },
+      },
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: gridBorderColor, // Dynamic grid line color
+          type: "dashed",
+        },
+      },
+    },
+    yAxis: {
+      type: "category",
+      data: ["Monday", "Tuesday", "Wednesday", "Thursday"], // Days of the week
+      axisLabel: {
+        color: textColor, // Dynamic text color
+      },
+      axisLine: {
+        lineStyle: {
+          color: axisLineColor, // Dynamic axis line color
+        },
+      },
+      axisTick: {
+        show: false, // Hide Y-axis ticks for cleaner look
+      },
+    },
+    series: [
+      {
+        name: "WFH",
+        type: "bar",
+        stack: "total", // Stack all bars together
+        label: {
+          show: true,
+          // Conditionally show label only if value is not zero
+          formatter: function (params) {
+            return params.value === 0 ? "" : params.value;
+          },
+          color: theme === "dark" ? "#000000" : "#ffffff", // Label text color, contrasting with segment color
+          fontWeight: "bold",
+        },
+        itemStyle: {
+          color: wfhColor, // WFH color
+        },
+        data: [3, 0, 1, 0], // Sample WFH data for Mon, Tue, Wed, Thu
+      },
+      {
+        name: "Leave",
+        type: "bar",
+        stack: "total",
+        label: {
+          show: true,
+          // Conditionally show label only if value is not zero
+          formatter: function (params) {
+            return params.value === 0 ? "" : params.value;
+          },
+          color: theme === "dark" ? "#000000" : "#ffffff", // Label text color
+          fontWeight: "bold",
+        },
+        itemStyle: {
+          color: leaveColor, // Leave color
+        },
+        data: [2, 1, 3, 0], // Sample Leave data for Mon, Tue, Wed, Thu
+      },
+      {
+        name: "Working",
+        type: "bar",
+        stack: "total",
+        label: {
+          show: true,
+          // Conditionally show label only if value is not zero
+          formatter: function (params) {
+            return params.value === 0 ? "" : params.value;
+          },
+          color: theme === "dark" ? "#000000" : "#ffffff", // Label text color
+          fontWeight: "bold",
+        },
+        itemStyle: {
+          color: workingColor, // Working color
+        },
+        data: [35, 39, 36, 40], // Sample Working data for Mon, Tue, Wed, Thu
+      },
+    ],
+    title: {
+      text: "Week Summary", // Chart title
+      left: "center", // Center the title
+      top: "3%", // Position title at the top
+      textStyle: {
+        color: textColor, // Dynamic title color
+      },
+    },
+  };
+
+  return (
+    <ReactECharts option={option} style={{ height: "100%", width: "100%" }} />
+  );
+};
+
+const MonthSummaryChart = () => {
+  const { theme } = useTheme();
+
+  const textColor = theme === "dark" ? "#ffffff" : "#000000";
+  const axisLineColor = theme === "dark" ? "#ffffff" : "#000000";
+  const gridBorderColor =
+    theme === "dark" ? "rgba(255, 255, 255, 0.2)" : "rgba(0, 0, 0, 0.1)";
+
+  // Define colors based on the image for Leave and WFH
+  const leaveColor = "#8C5E5D"; // A shade of brown/red
+  const wfhColor = "#D78737"; // A shade of orange
+
+  const option = {
+    backgroundColor: "transparent", // Set background to transparent
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "shadow", // 'shadow' as default; can also be 'line' or 'none'
+      },
+      formatter: function (params) {
+        let tooltipContent = params[0].name + "<br/>";
+        params.forEach((item) => {
+          tooltipContent += `${item.marker} ${item.seriesName}: ${item.value}<br/>`;
+        });
+        return tooltipContent;
+      },
+    },
+    legend: {
+      data: ["Leave", "WFH"], // Legend items based on your data
+      bottom: "0%", // Position at the bottom
+      left: "center", // Center horizontally
+      textStyle: {
+        color: textColor, // Dynamic text color
+      },
+    },
+    grid: {
+      left: "3%",
+      right: "4%",
+      bottom: "10%", // Adjust bottom to make space for the legend
+      top: "15%", // Adjust top for title
+      containLabel: true,
+    },
+    xAxis: {
+      type: "category",
+      data: ["Jan", "Feb", "Mar", "Apr", "May"], // Months from the image
+      axisLabel: {
+        color: textColor, // Dynamic text color
+      },
+      axisLine: {
+        lineStyle: {
+          color: axisLineColor, // Dynamic axis line color
+        },
+      },
+      splitLine: {
+        show: false, // Hide x-axis split lines
+      },
+    },
+    yAxis: {
+      type: "value",
+      axisLabel: {
+        color: textColor, // Dynamic text color
+      },
+      axisLine: {
+        lineStyle: {
+          color: axisLineColor, // Dynamic axis line color
+        },
+      },
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: gridBorderColor, // Dynamic grid line color
+          type: "solid", // Solid line as in the image
+        },
+      },
+    },
+    series: [
+      {
+        name: "Leave",
+        type: "bar",
+        barGap: "20%", // Gap between groups of bars
+        barCategoryGap: "40%", // Gap between categories
+        label: {
+          show: true,
+          position: "top", // Show label on top of the bar
+          color: textColor, // Label text color
+          fontWeight: "bold",
+        },
+        itemStyle: {
+          color: leaveColor, // Leave color
+        },
+        data: [10, 5, 0, 7, 9], // Sample Leave data from image
+      },
+      {
+        name: "WFH",
+        type: "bar",
+        label: {
+          show: true,
+          position: "top", // Show label on top of the bar
+          color: textColor, // Label text color
+          fontWeight: "bold",
+        },
+        itemStyle: {
+          color: wfhColor, // WFH color
+        },
+        data: [3, 0, 0, 1, 2], // Sample WFH data from image
+      },
+    ],
+    title: {
+      text: "Month Summary", // Chart title
+      left: "center", // Center the title
+      top: "3%", // Position title at the top
+      textStyle: {
+        color: textColor, // Dynamic title color
+      },
+    },
+  };
+
+  return (
+    <ReactECharts option={option} style={{ height: "100%", width: "100%" }} />
+  );
+};
+
 export {
   ExpenseBarChart,
   SummaryBarChart,
@@ -938,4 +1282,7 @@ export {
   LoginTrendChart,
   LogoutTrendChart,
   DeepDiveChart,
+  TodayWorkingStatusChart,
+  WeekSummaryChart,
+  MonthSummaryChart,
 };
