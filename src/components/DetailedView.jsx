@@ -10,106 +10,63 @@ const options = [
 
 export default function DetailedView() {
   const [selectedOption, setSelectedOption] = useState(null);
-  const [expenseData, setExpenseData] = useState([
+  const [leaveData, setLeaveData] = useState([
     {
       id: 1,
       empId: "NNDS001",
       fullName: "Venkatsubramanian R",
+      leaveType: "CL",
       requestDate: "05/01/2024",
-      claimDate: "20/09/2024",
-      billNo: "001",
-      billAmount: 200,
-      claimAmount: 150,
+      fromDate: "06/01/2025",
+      toDate: "10/01/2025",
       reason: "NIL",
-      noOfPeople: 1,
-      eligiblePerson: "Venkatsubramanian R",
-      teamLead: "Venkatsubramanian R",
       approvalStatus: true,
       approvalBy: "Venkatsubramanian R",
       approvalDate: "05/01/2024",
-      paymentStatus: true,
-      billSoftCopy: "bill",
     },
     {
       id: 2,
-      empId: "NNDS002",
+      empId: "NNDS001",
       fullName: "Maheswari R",
-      requestDate: "05/01/2024",
-      claimDate: "20/09/2024",
-      billNo: "001",
-      billAmount: 200,
-      claimAmount: 150,
+      leaveType: "SL",
+      requestDate: "11/09/2024",
+      fromDate: "20/09/2024",
+      toDate: "25/09/2024",
       reason: "NIL",
-      noOfPeople: 1,
-      eligiblePerson: "Maheswari R",
-      teamLead: "Venkatsubramanian R",
-      approvalStatus: false,
+      approvalStatus: true,
       approvalBy: "Venkatsubramanian R",
-      approvalDate: "05/01/2024",
-      paymentStatus: true,
-      billSoftCopy: "bill",
+      approvalDate: "11/09/2024",
     },
     {
       id: 3,
       empId: "NNDS001",
       fullName: "Venkatsubramanian R",
-      requestDate: "05/01/2024",
-      claimDate: "20/09/2024",
-      billNo: "001",
-      billAmount: 200,
-      claimAmount: 150,
+      leaveType: "EL",
+      requestDate: "11/12/2024",
+      fromDate: "06/01/2025",
+      toDate: "07/01/2025",
       reason: "NIL",
-      noOfPeople: 1,
-      eligiblePerson: "Venkatsubramanian R",
-      teamLead: "Venkatsubramanian R",
-      approvalStatus: true,
-      approvalBy: "Venkatsubramanian R",
-      approvalDate: "05/01/2024",
-      paymentStatus: false,
-      billSoftCopy: "bill",
-    },
-    {
-      id: 4,
-      empId: "NNDS002",
-      fullName: "Maheswari R",
-      requestDate: "05/01/2024",
-      claimDate: "20/09/2024",
-      billNo: "001",
-      billAmount: 200,
-      claimAmount: 150,
-      reason: "NIL",
-      noOfPeople: 1,
-      eligiblePerson: "Maheswari R",
-      teamLead: "Venkatsubramanian R",
       approvalStatus: false,
       approvalBy: "Venkatsubramanian R",
-      approvalDate: "05/01/2024",
-      paymentStatus: false,
-      billSoftCopy: "bill",
+      approvalDate: "",
     },
   ]);
   const columns = [
     { name: "Sr. No.", minWidth: "50px" },
     { name: "Employee IDs", minWidth: "100px" },
     { name: "Full Name", minWidth: "180px" },
+    { name: "Leave Type", minWidth: "100px" },
     { name: "Request Date", minWidth: "100px" },
-    { name: "Claim Date", minWidth: "100px" },
-    { name: "Bill No", minWidth: "80px" },
-    { name: "Bill Amount", minWidth: "100px" },
-    { name: "Claim Amount", minWidth: "100px" },
+    { name: "From Date", minWidth: "80px" },
+    { name: "To Date", minWidth: "100px" },
     { name: "Reason", minWidth: "160px" },
-    { name: "No of people", minWidth: "80px" },
-    { name: "Eligible person name", minWidth: "180px" },
-    { name: "Team Lead", minWidth: "180px" },
     { name: "Approval Status", minWidth: "180px" },
     { name: "Approval By", minWidth: "180px" },
     { name: "Approval Date", minWidth: "100px" },
-    { name: "Payment Status", minWidth: "120px" },
-    { name: "Bill Soft Copy", minWidth: "120px" },
   ];
 
   const handleToggleChange = (id) => {
-    setExpenseData((prevData) =>
+    setLeaveData((prevData) =>
       prevData.map((item) =>
         item.id === id
           ? { ...item, approvalStatus: !item.approvalStatus }
@@ -118,46 +75,38 @@ export default function DetailedView() {
     );
   };
 
-  const getEmployeeValue = (expense, column) => {
+  const getEmployeeValue = (leave, column) => {
     switch (column) {
       case "Sr. No.":
-        return expense.id;
+        return leave.id;
       case "Employee IDs":
-        return expense.empId;
+        return leave.empId;
       case "Full Name":
-        return expense.fullName;
+        return leave.fullName;
+      case "Leave Type":
+        return leave.leaveType;
       case "Request Date":
-        return expense.requestDate;
-      case "Claim Date":
-        return expense.claimDate;
-      case "Bill No":
-        return expense.billNo;
-      case "Bill Amount":
-        return expense.billAmount;
-      case "Claim Amount":
-        return expense.claimAmount;
+        return leave.requestDate;
+      case "From Date":
+        return leave.fromDate;
+      case "To Date":
+        return leave.toDate;
       case "Reason":
-        return expense.reason;
-      case "No of people":
-        return expense.noOfPeople;
-      case "Eligible person name":
-        return expense.eligiblePerson;
-      case "Team Lead":
-        return expense.teamLead;
+        return leave.reason;
       case "Approval Status":
         return (
           <div className="flex justify-center items-center">
             <div className="toggler">
               <input
-                id={`toggler-${expense.id}`}
-                name={`toggler-${expense.id}`}
+                id={`toggler-${leave.id}`}
+                name={`toggler-${leave.id}`}
                 type="checkbox"
-                checked={expense.approvalStatus}
-                onChange={() => handleToggleChange(expense.id)}
+                checked={leave.approvalStatus}
+                onChange={() => handleToggleChange(leave.id)}
               />
               <label
                 className="bg-[#BA7C3C5b] dark:bg-[#0000005b] backdrop-blur-2xl"
-                htmlFor={`toggler-${expense.id}`}
+                htmlFor={`toggler-${leave.id}`}
               >
                 <svg
                   className="toggler-on"
@@ -196,28 +145,9 @@ export default function DetailedView() {
           </div>
         );
       case "Approval By":
-        return expense.approvalBy;
+        return leave.approvalBy;
       case "Approval Date":
-        return expense.approvalDate;
-      case "Payment Status":
-        return (
-          <div className="flex justify-center items-center">
-            {expense.paymentStatus ? (
-              <CircleCheck style={{ color: "#50ac5d" }} />
-            ) : (
-              <CircleX style={{ color: "#d7062a" }} />
-            )}
-          </div>
-        );
-      case "Bill Soft Copy":
-        return (
-          <div className="flex justify-center items-center">
-            <Download
-              id={`downloadBill-${expense.id}`}
-              className="cursor-pointer"
-            />
-          </div>
-        );
+        return leave.approvalDate;
       default:
         return "";
     }
@@ -315,14 +245,14 @@ export default function DetailedView() {
               </tr>
             </thead>
             <tbody className="text-[#344174] dark:text-white">
-              {expenseData.map((expense, index) => (
+              {leaveData.map((leave, index) => (
                 <tr
                   key={index}
                   className="border-b border-b-[#BA7C3C] dark:border-b-white hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   {columns.map((column, colIndex) => (
                     <td
-                      key={`${expense.id}-${column.name}`}
+                      key={`${leave.id}-${column.name}`}
                       style={{
                         minWidth: column.minWidth,
                       }}
@@ -330,7 +260,7 @@ export default function DetailedView() {
                         colIndex === columns.length - 1 ? "" : "border-r"
                       }`}
                     >
-                      {getEmployeeValue(expense, column.name)}
+                      {getEmployeeValue(leave, column.name)}
                     </td>
                   ))}
                 </tr>
